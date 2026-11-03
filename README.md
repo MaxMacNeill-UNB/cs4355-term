@@ -2,7 +2,7 @@
 
 Max MacNeill, Eric Smith, Dexter Lyons
 
-File integrity monitor
+File integrity monitor (Change monitoring platform)
 - Calculate file hashes and checks them to see if it’s been changed since the last check
 - Coding language: Java
 - Security concepts touched on SHA-256, integrity, tampering detection
