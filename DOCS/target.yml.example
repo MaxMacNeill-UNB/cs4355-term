@@ -1,0 +1,110 @@
+# ==============================================================================
+# File Integrity Monitor (FIM) - Target Configuration Template
+# ==============================================================================
+# Copy this file to 'targets.yml' and configure your monitoring endpoints.
+#
+# Supported Path Prefixes:
+#   - file://   (Local filesystem)
+#   - smb://    (Network file shares)
+#   - https://  (Remote web resources)
+#   - http://   (Remote web resources - unencrypted)
+# ==============================================================================
+
+global_defaults:
+  # File extensions to monitor when scanning directories or crawling pages
+  monitored_extensions:
+    - "" # this checks pages that have no extension, like an autoindex file
+    - ".html"
+    - ".htm"
+    - ".css"
+    - ".json"
+    - ".xml"
+    - ".js"
+    - ".ts"
+    - ".php"
+    - ".sh"
+    - ".ps1"
+    - ".py"
+    - ".java"
+    - ".c"
+    - ".h"
+  
+  # Default hashing algorithm
+  hash_algorithm: "SHA-256"
+
+targets:
+  # ----------------------------------------------------------------------------
+  # Monitors a specific single file over a local or network path.
+  # Supports optional cryptographic signature verification.
+  # ----------------------------------------------------------------------------
+  - id: "prod-deploy-script"
+    type: "file"
+    path: "smb://fileserver.example.com/scripts/deploy.sh"
+    description: "Production deployment automation script"
+    
+    logging:
+      # Modes:
+      #   - "full_versions" : Keep X full copies of the file + all historical hashes
+      #   - "hashes_only"   : Keep X number of historical hashes (no file backups)
+      #   - "last_only"     : Overwrite and retain only the most recent hash
+      mode: "full_versions"
+      retention_count: 5
+
+    # Optional: Cryptographic signature validation (Not supported for 'page' targets)
+    # Omitting these 2 lines is equivalent to passing false
+    signature_validation:
+      enabled: false
+
+  - id: "signed-compliance-doc"
+    type: "file"
+    path: "https://intranet.corp/policies/security_baseline.pdf"
+    description: "Official security policy document with embedded PDF signature"
+    
+    logging:
+      mode: "hashes_only"
+      retention_count: 10
+
+    signature_validation:
+      enabled: true
+      plugin: "pdf"
+      public_key_path: "file:///var/keys/compliance.pem"
+
+  - id: "remote-config-bootstrap"
+    type: "file"
+    path: "https://cdn.example.com/init/bootstrap.ps1"
+    description: "External bootstrap script (hash tracking only)"
+    
+    logging:
+      mode: "last_only"
+
+  # ----------------------------------------------------------------------------
+  # Crawls a web page up to a defined link depth across allowed domains.
+  # Validates all discovered scripts and matching files against saved baselines.
+  # Note: 'signature_validation' is unsupported and ignored in this mode.
+  # Traverses Folders for non-web paths.
+  # ----------------------------------------------------------------------------
+  - id: "customer-portal-assets"
+    type: "page"
+    path: "https://portal.example.com/login"
+    description: "Crawl portal pages and validate loaded JS/script assets"
+    
+    logging:
+      mode: "hashes_only"
+      retention_count: 20
+
+    crawl_settings:
+      # 0 = target page only; 1 = target page + direct links; 2 = two hops deep, etc.
+      depth: 2
+      
+      # Restrict crawler strictly to these domains/subdomains to prevent external drift.
+      # Skip for non-web modes.
+      allowed_domains:
+        - "portal.example.com"
+        - "static.example.com"
+        - "scripts.cdn.example.com"
+      
+      # Override global extensions for this specific crawl target (Optional)
+      extensions_override:
+        - ".js"
+        - ".mjs"
+        - ".html"
