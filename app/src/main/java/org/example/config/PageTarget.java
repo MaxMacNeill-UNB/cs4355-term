@@ -17,6 +17,7 @@ public class PageTarget implements MonitorTarget {
     private String type = "page";
     private String path;
     private String description;
+    private TargetPeriod period;
     private LoggingConfig logging;
 
     @JsonProperty("crawl_settings")
@@ -62,6 +63,15 @@ public class PageTarget implements MonitorTarget {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public TargetPeriod getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(TargetPeriod period) {
+        this.period = period;
     }
 
     @Override

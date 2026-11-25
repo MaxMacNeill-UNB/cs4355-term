@@ -32,7 +32,7 @@ public interface MonitorTarget {
     String getType();
 
     /**
-     * Target resource URI/path (e.g., file://, smb://, http://, https://).
+     * Target resource URI/path (e.g., file://, http://, https://).
      */
     String getPath();
 
@@ -40,6 +40,11 @@ public interface MonitorTarget {
      * Human-readable description of the target.
      */
     String getDescription();
+
+    /**
+     * Optional monitoring schedule period in cron, duration, or minute notation.
+     */
+    TargetPeriod getPeriod();
 
     /**
      * Logging and retention configuration for this target.

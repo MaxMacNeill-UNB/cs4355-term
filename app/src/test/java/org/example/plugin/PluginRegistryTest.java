@@ -11,7 +11,6 @@ import org.example.plugin.signature.SignaturePlugin;
 import org.example.plugin.source.FileSourcePlugin;
 import org.example.plugin.source.HttpSourcePlugin;
 import org.example.plugin.source.HttpsSourcePlugin;
-import org.example.plugin.source.SmbSourcePlugin;
 import org.example.plugin.source.SourcePlugin;
 import org.junit.jupiter.api.Test;
 
@@ -29,9 +28,9 @@ class PluginRegistryTest {
     void selectsDefaultSourcePluginsAndRejectsInvalidSchemes() {
         assertInstanceOf(HttpSourcePlugin.class, registry.selectSourcePlugin("http://example.com/a.js"));
         assertInstanceOf(HttpsSourcePlugin.class, registry.selectSourcePlugin("https://example.com/a.js"));
-        assertInstanceOf(SmbSourcePlugin.class, registry.selectSourcePlugin("smb://server/share/file.sh"));
         assertInstanceOf(FileSourcePlugin.class, registry.selectSourcePlugin("file:///etc/hosts"));
 
+        assertThrows(IllegalArgumentException.class, () -> registry.selectSourcePlugin("smb://server/share/file.sh"));
         assertThrows(IllegalArgumentException.class, () -> registry.selectSourcePlugin("ftp://example.com/file"));
         assertThrows(IllegalArgumentException.class, () -> registry.selectSourcePlugin("/var/log/syslog"));
         assertThrows(IllegalArgumentException.class, () -> registry.selectSourcePlugin((String) null));
@@ -59,7 +58,7 @@ class PluginRegistryTest {
         MonitorTarget[] targets = new ConfigParser().parse(Path.of("..", "DOCS", "target.yml.example"));
 
         FileTarget deployScript = assertInstanceOf(FileTarget.class, targets[0]);
-        assertInstanceOf(SmbSourcePlugin.class, registry.selectSourcePlugin(deployScript));
+        assertInstanceOf(FileSourcePlugin.class, registry.selectSourcePlugin(deployScript));
         assertInstanceOf(Sha256HashPlugin.class, registry.selectHashPlugin(deployScript));
         assertEquals(Optional.empty(), registry.selectSignaturePlugin(deployScript));
 

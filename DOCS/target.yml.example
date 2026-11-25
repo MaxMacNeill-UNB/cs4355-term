@@ -5,7 +5,6 @@
 #
 # Supported Path Prefixes:
 #   - file://   (Local filesystem)
-#   - smb://    (Network file shares)
 #   - https://  (Remote web resources)
 #   - http://   (Remote web resources - unencrypted)
 # ==============================================================================
@@ -39,8 +38,9 @@ targets:
   # ----------------------------------------------------------------------------
   - id: "prod-deploy-script"
     type: "file"
-    path: "smb://fileserver.example.com/scripts/deploy.sh"
+    path: "file://var/scripts/deploy.sh"
     description: "Production deployment automation script"
+    period: "0 0 * * *" # Cron notation
     
     logging:
       # Modes:
@@ -59,6 +59,7 @@ targets:
     type: "file"
     path: "https://intranet.corp/policies/security_baseline.pdf"
     description: "Official security policy document with embedded PDF signature"
+    period: "1d" # equivalent to 24h
     
     logging:
       mode: "hashes_only"
@@ -87,6 +88,7 @@ targets:
     type: "page"
     path: "https://portal.example.com/login"
     description: "Crawl portal pages and validate loaded JS/script assets"
+    period: "60" # Without a time notation, period is assumed to be in minutes.
     
     logging:
       mode: "hashes_only"

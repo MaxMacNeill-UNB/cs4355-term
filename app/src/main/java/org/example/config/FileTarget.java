@@ -14,6 +14,7 @@ public class FileTarget implements MonitorTarget {
     private String type = "file";
     private String path;
     private String description;
+    private TargetPeriod period;
     private LoggingConfig logging;
 
     @JsonProperty("signature_validation")
@@ -59,6 +60,15 @@ public class FileTarget implements MonitorTarget {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public TargetPeriod getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(TargetPeriod period) {
+        this.period = period;
     }
 
     @Override
