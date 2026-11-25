@@ -10,7 +10,6 @@ import org.example.plugin.signature.SignaturePlugin;
 import org.example.plugin.source.FileSourcePlugin;
 import org.example.plugin.source.HttpSourcePlugin;
 import org.example.plugin.source.HttpsSourcePlugin;
-import org.example.plugin.source.SmbSourcePlugin;
 import org.example.plugin.source.SourcePlugin;
 
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class PluginRegistry {
         PluginRegistry registry = new PluginRegistry();
         registry.registerSourcePlugin(new HttpSourcePlugin());
         registry.registerSourcePlugin(new HttpsSourcePlugin());
-        registry.registerSourcePlugin(new SmbSourcePlugin());
         registry.registerSourcePlugin(new FileSourcePlugin());
 
         registry.registerHashPlugin(new Sha256HashPlugin());
@@ -69,7 +67,7 @@ public class PluginRegistry {
     /**
      * Selects the {@link SourcePlugin} matching the URI scheme of {@code path}.
      *
-     * @param path resource URI/path (e.g., {@code https://...}, {@code smb://...}, {@code file://...})
+     * @param path resource URI/path (e.g., {@code https://...}, {@code file://...})
      * @return matching {@link SourcePlugin}
      * @throws IllegalArgumentException if {@code path} has no valid scheme or no plugin supports it
      */
