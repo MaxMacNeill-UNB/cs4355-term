@@ -1,0 +1,20 @@
+global_defaults:
+  monitored_extensions:
+    - ".sh"
+    - ".py"
+  hash_algorithm: "SHA-256"
+
+targets:
+  - id: "single-file"
+    type: "file"
+    path: "file://./testdata/single.sh"
+    logging:
+      mode: "last_only"
+
+  - id: "script-folder"
+    type: "page"
+    path: "file://./testdata/scripts"
+    logging:
+      mode: "last_only"
+    crawl_settings:
+      depth: 1

@@ -3,12 +3,32 @@
  */
 package org.example;
 
+import org.example.config.ConfigParser;
+import org.example.config.MonitorTarget;
+import org.example.monitor.AlertLogger;
+import org.example.monitor.FileMonitor;
+import org.example.monitor.HashStore;
+import org.example.plugin.PluginRegistry;
+
+import java.nio.file.Path;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+    public static void main(String[] args) throws Exception{
+        if (args.length < 1){
+            System.out.println("Usage: ./gradlew run --args=\"<config.yml>\"");
+            return;
+        }
+
+        MonitorTarget[] targets = new ConfigParser().parse(Path.of(args[0]));
+
+        FileMonitor monitor = new FileMonitor(PluginRegistry.withDefaults(), new HashStore(Path.of("hashes.json")), new AlertLogger(Path.of("alerts.log")));
+
+        for (MonitorTarget target : targets){
+            monitor.check(target);
+        }
     }
 }
