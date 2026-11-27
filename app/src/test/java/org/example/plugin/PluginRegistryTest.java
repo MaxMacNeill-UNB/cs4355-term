@@ -71,10 +71,10 @@ class PluginRegistryTest {
 
     @Test
     void stubPluginsThrowUnsupportedOperationException() {
-        SourcePlugin source = registry.selectSourcePlugin("https://example.com");
-        assertThrows(UnsupportedOperationException.class, () -> source.fetch("https://example.com"));
-        assertThrows(UnsupportedOperationException.class, () -> source.discover("https://example.com", 1, List.of(), List.of()));
-        assertThrows(UnsupportedOperationException.class, () -> source.isAvailable("https://example.com"));
+        SourcePlugin source = registry.selectSourcePlugin("file:///tmp/example.txt");
+        assertThrows(UnsupportedOperationException.class, () -> source.fetch("file:///tmp/example.txt"));
+        assertThrows(UnsupportedOperationException.class, () -> source.discover("file:///tmp/example.txt", 1, List.of(), List.of()));
+        assertThrows(UnsupportedOperationException.class, () -> source.isAvailable("file:///tmp/example.txt"));
 
         HashPlugin hash = registry.selectHashPlugin("BLAKE3");
         assertThrows(UnsupportedOperationException.class, () -> hash.hash(new byte[0]));
